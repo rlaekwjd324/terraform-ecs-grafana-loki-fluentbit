@@ -1,0 +1,10 @@
+apiVersion: 1
+dashboards:
+  - name: "Loki Dashboard 1"
+    uid: loki-dashboard-1
+    config:
+      title: "Loki Dashboard 1"
+      panels: 
+        - type: graph
+          title: "Panel 1"
+          datasource: Loki

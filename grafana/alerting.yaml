@@ -1,0 +1,44 @@
+# Grafana Configuration
+apiVersion: 1
+alerting:
+  enabled: true
+  email:
+    enabled: false
+    name: Email
+    type: email
+    uid: email-notification
+    frequency: 1m
+    settings:
+      addresses: ["<이메일 알림을 위한 이메일 주소>"]
+
+  slack:
+    enabled: true
+    name: Slack
+    type: slack
+    uid: slack-notification
+    frequency: 1m
+    settings:
+      url: "<Slack 웹훅 URL>"
+      channel: "#<Slack 채널 이름>"
+      username: Grafana
+      icon_url: ""
+      icon_emoji: ""
+
+  # HTTP 상태 코드가 500인 로그를 감시하는 알림 규칙
+  # rules:
+  #   - name: HTTP Status 500 Error
+  #     message: 'HTTP Status Code 500 Error Detected!'
+  #     query: '{job="your-job-name", status="500"}'
+  #     duration: 5m
+  #     severity: critical
+  #     condition: 'when'
+  #     eval_operator: '='
+  #     eval_queries:
+  #       - query: 'count_over_time({job="your-job-name", status="500"}[5m])'
+  #         reducer: sum
+  #         operator: '='
+  #         threshold: 1
+  #     no_data_state: ok
+  #     notifications:
+  #       - type: slack
+  #         uid: slack-notification

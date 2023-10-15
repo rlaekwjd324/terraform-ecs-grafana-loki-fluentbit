@@ -1,0 +1,17 @@
+# Grafana Configuration
+apiVersion: 1
+
+# 데이터 소스 설정
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    jsonData:
+      maxLines: 1000
+      # 다른 Loki 데이터 소스 옵션 설정...
+    secureJsonData:
+      # 필요한 경우 인증 정보를 설정 (예: username 및 password)
+      # username: your_username
+      # password: your_password
+    version: 1
