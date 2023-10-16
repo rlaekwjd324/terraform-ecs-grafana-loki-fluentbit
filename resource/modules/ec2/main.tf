@@ -12,7 +12,7 @@ resource "aws_instance" "dory-terraform-test-public-ec2-bastion-host" {
   hibernation                          = false
   instance_initiated_shutdown_behavior = "stop"
   instance_type                        = "t2.micro"
-  key_name                             = "dory-terraform-test-bastion-host-key"
+  key_name                             = "${var.env}-${var.project_name}-bastion-host-key"
   metadata_options {
     http_put_response_hop_limit = 2
     http_tokens                 = "required"
@@ -26,25 +26,25 @@ resource "aws_instance" "dory-terraform-test-public-ec2-bastion-host" {
   }
   subnet_id = aws_subnet.dory-terraform-test-public-subnet-1.id
   tags = {
-    Name = "dory-terraform-test-public-ec2-bastion-host"
+    Name = "${var.env}-${var.project_name}-public-ec2-bastion-host"
   }
   tenancy                = "default"
   vpc_security_group_ids = [aws_security_group.dory-terraform-test-public-ec2.id]
 }
 
 resource "aws_key_pair" "dory-terraform-test-bastion-host-key" {
-  key_name   = "dory-terraform-test-bastion-host-key"
+  key_name   = "${var.env}-${var.project_name}-bastion-host-key"
   public_key = tls_private_key.dory-terraform-test_key.public_key_openssh
   tags = {
-    Name = "dory-terraform-test-bastion-host-key"
+    Name = "${var.env}-${var.project_name}-bastion-host-key"
   }
 }
 
 resource "aws_key_pair" "dory-terraform-test-private-ec2-key" {
-  key_name   = "dory-terraform-test-private-ec2-key"
+  key_name   = "${var.env}-${var.project_name}-private-ec2-key"
   public_key = tls_private_key.dory-terraform-test_key.public_key_openssh
   tags = {
-    Name = "dory-terraform-test-private-ec2-key"
+    Name = "${var.env}-${var.project_name}-private-ec2-key"
   }
 }
 
@@ -54,13 +54,13 @@ resource "tls_private_key" "dory-terraform-test_key" {
 }
 
 resource "local_file" "dory-terraform-test-private-ec2-key" {
-  filename        = "./.ssh/dory-terraform-test-private-ec2-key.pem"
+  filename        = "./.ssh/d${var.env}-${var.project_name}-private-ec2-key.pem"
   content         = tls_private_key.dory-terraform-test_key.private_key_pem
   file_permission = "0600"
 }
 
 resource "local_file" "dory-terraform-test-bastion-host-key" {
-  filename        = "./.ssh/dory-terraform-test-bastion-host-key.pem"
+  filename        = "./.ssh/${var.env}-${var.project_name}-bastion-host-key.pem"
   content         = tls_private_key.dory-terraform-test_key.private_key_pem
   file_permission = "0600"
 }

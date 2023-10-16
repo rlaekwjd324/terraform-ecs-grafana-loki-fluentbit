@@ -20,9 +20,9 @@ resource "aws_security_group" "dory-terraform-test-private-ec2" {
     security_groups = [aws_security_group.dory-terraform-test-alb.id]
     to_port     = 65535
   }
-  name = "dory-terraform-test-private-ec2"
+  name = "${var.env}-${var.project_name}-private-ec2"
   tags = {
-    Name = "dory-terraform-test-private-ec2"
+    Name = "${var.env}-${var.project_name}-private-ec2"
   }
   vpc_id = aws_vpc.dory-terraform-test-vpc.id
 
@@ -43,9 +43,9 @@ resource "aws_security_group" "dory-terraform-test-public-ec2" {
     protocol    = "tcp"
     to_port     = 22
   }
-  name = "dory-terraform-test-public-ec2"
+  name = "${var.env}-${var.project_name}-public-ec2"
   tags = {
-    Name = "dory-terraform-test-public-ec2"
+    Name = "${var.env}-${var.project_name}-public-ec2"
   }
   vpc_id = aws_vpc.dory-terraform-test-vpc.id
 
@@ -78,9 +78,9 @@ resource "aws_security_group" "dory-terraform-test-alb" {
     cidr_blocks = ["0.0.0.0/0"]
     to_port     = 65535
   }
-  name = "dory-terraform-test-alb"
+  name = "${var.env}-${var.project_name}-alb"
   tags = {
-    Name = "dory-terraform-test-alb"
+    Name = "${var.env}-${var.project_name}-alb"
   }
   vpc_id = aws_vpc.dory-terraform-test-vpc.id
 
@@ -102,9 +102,9 @@ resource "aws_security_group" "dory-terraform-test-rds-security-group" {
     security_groups = [aws_security_group.dory-terraform-test-private-ec2.id]
     to_port         = 3306
   }
-  name = "dory-terraform-test-rds-security-group"
+  name = "${var.env}-${var.project_name}-rds-security-group"
   tags = {
-    Name = "dory-terraform-test-rds-sg"
+    Name = "${var.env}-${var.project_name}-rds-sg"
   }
   vpc_id = aws_vpc.dory-terraform-test-vpc.id
 }

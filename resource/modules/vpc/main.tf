@@ -2,7 +2,7 @@ resource "aws_vpc" "dory-terraform-test-vpc" {
   cidr_block                     = "10.5.0.0/16"
   enable_dns_hostnames           = true
   tags                           = {
-    Name = "dory-terraform-test-vpc"
+    Name = "${var.env}-${var.project_name}-vpc"
   }
 }
 
@@ -11,7 +11,7 @@ resource "aws_subnet" "dory-terraform-test-public-subnet-1" {
   private_dns_hostname_type_on_launch = "ip-name"
   availability_zone                   = "ap-northeast-2a"
   tags                                = {
-    Name = "dory-terraform-test-public-subnet-1"
+    Name = "${var.env}-${var.project_name}-public-subnet-1"
   }
   map_public_ip_on_launch             = true
   vpc_id                              = aws_vpc.dory-terraform-test-vpc.id
@@ -22,7 +22,7 @@ resource "aws_subnet" "dory-terraform-test-public-subnet-5" {
   private_dns_hostname_type_on_launch = "ip-name"
   availability_zone                   = "ap-northeast-2a"
   tags                                = {
-    Name = "dory-terraform-test-public-subnet-5"
+    Name = "${var.env}-${var.project_name}-public-subnet-5"
   }
   vpc_id                              = aws_vpc.dory-terraform-test-vpc.id
 }
@@ -32,7 +32,7 @@ resource "aws_subnet" "dory-terraform-test-private-subnet-3" {
   private_dns_hostname_type_on_launch = "ip-name"
   availability_zone                   = "ap-northeast-2a"
   tags                                = {
-    Name = "dory-terraform-test-private-subnet-3"
+    Name = "${var.env}-${var.project_name}-private-subnet-3"
   }
   vpc_id                              = aws_vpc.dory-terraform-test-vpc.id
 }
@@ -42,7 +42,7 @@ resource "aws_subnet" "dory-terraform-test-public-subnet-2" {
   private_dns_hostname_type_on_launch = "ip-name"
   availability_zone                   = "ap-northeast-2c"
   tags                                = {
-    Name = "dory-terraform-test-public-subnet-2"
+    Name = "${var.env}-${var.project_name}-public-subnet-2"
   }
   map_public_ip_on_launch             = true
   vpc_id                              = aws_vpc.dory-terraform-test-vpc.id
@@ -53,20 +53,20 @@ resource "aws_subnet" "dory-terraform-test-public-subnet-6" {
   private_dns_hostname_type_on_launch = "ip-name"
   availability_zone                   = "ap-northeast-2c"
   tags                                = {
-    Name = "dory-terraform-test-public-subnet-6"
+    Name = "${var.env}-${var.project_name}-public-subnet-6"
   }
   vpc_id                              = aws_vpc.dory-terraform-test-vpc.id
 }
 
 resource "aws_db_subnet_group" "dory-terraform-test-rds-subnet-group" {
   description = "development rds subnet group"
-  name        = "dory-terraform-test-rds-subnet-group"
+  name        = "${var.env}-${var.project_name}-rds-subnet-group"
   subnet_ids  = [aws_subnet.dory-terraform-test-public-subnet-5.id, aws_subnet.dory-terraform-test-public-subnet-6.id]
 }
 
 resource "aws_internet_gateway" "dory-terraform-test-igw" {
   tags = {
-    Name = "dory-terraform-test-igw"
+    Name = "${var.env}-${var.project_name}-igw"
   }
   vpc_id = aws_vpc.dory-terraform-test-vpc.id
 }
@@ -77,7 +77,7 @@ resource "aws_route_table" "dory-terraform-test-public-rt" {
     gateway_id = aws_internet_gateway.dory-terraform-test-igw.id
   }
   tags   = {
-    Name = "dory-terraform-test-public-rt"
+    Name = "${var.env}-${var.project_name}-public-rt"
   }
   vpc_id = aws_vpc.dory-terraform-test-vpc.id
 }
@@ -85,7 +85,7 @@ resource "aws_route_table" "dory-terraform-test-public-rt" {
 resource "aws_eip" "dory-terraform-test-nat-eip" {
     domain = "vpc"
     tags = {
-        Name = "dory-terraform-test-nat-eip"    
+        Name = "${var.env}-${var.project_name}-nat-eip"    
     }
 }
 
@@ -93,7 +93,7 @@ resource "aws_nat_gateway" "dory-terraform-test-nat" {
   allocation_id = aws_eip.dory-terraform-test-nat-eip.id
   subnet_id     = aws_subnet.dory-terraform-test-public-subnet-1.id
   tags          = {
-    Name = "dory-terraform-test-nat"
+    Name = "${var.env}-${var.project_name}-nat"
   }
 }
 
@@ -123,7 +123,7 @@ resource "aws_route_table" "dory-terraform-test-private-rt" {
     nat_gateway_id = aws_nat_gateway.dory-terraform-test-nat.id
   }
   tags = {
-    Name = "dory-terraform-test-private-rt"
+    Name = "${var.env}-${var.project_name}-private-rt"
   }
   vpc_id = aws_vpc.dory-terraform-test-vpc.id
 }

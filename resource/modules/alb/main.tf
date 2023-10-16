@@ -1,6 +1,6 @@
 /* alb 설정 */
 resource "aws_alb" "dory-terraform-test-alb" {
-  name            = "dory-terraform-test-alb"
+  name            = "${var.env}-${var.project_name}-alb"
   internal        = false
   security_groups = [aws_security_group.dory-terraform-test-alb.id]
   subnets         = [aws_subnet.dory-terraform-test-public-subnet-1.id, aws_subnet.dory-terraform-test-public-subnet-2.id]
@@ -9,7 +9,7 @@ resource "aws_alb" "dory-terraform-test-alb" {
 }
 
 resource "aws_alb_target_group" "dory-terraform-test-alb-grafana" {
-  name     = "dory-terraform-test-tg-grafana"
+  name     = "${var.env}-${var.project_name}-tg-grafana"
   port     = 3000
   protocol = "HTTP"
   vpc_id   = aws_vpc.dory-terraform-test-vpc.id
@@ -23,7 +23,7 @@ resource "aws_alb_target_group" "dory-terraform-test-alb-grafana" {
 }
 
 resource "aws_alb_target_group" "dory-terraform-test-alb-app" {
-  name     = "dory-terraform-test-tg-app"
+  name     = "${var.env}-${var.project_name}-tg-app"
   port     = 3033
   protocol = "HTTP"
   vpc_id   = aws_vpc.dory-terraform-test-vpc.id
@@ -37,7 +37,7 @@ resource "aws_alb_target_group" "dory-terraform-test-alb-app" {
 }
 
 resource "aws_alb_target_group" "dory-terraform-test-alb-loki" {
-  name     = "dory-terraform-test-tg-loki"
+  name     = "${var.env}-${var.project_name}-tg-loki"
   port     = 3100
   protocol = "HTTP"
   vpc_id   = aws_vpc.dory-terraform-test-vpc.id

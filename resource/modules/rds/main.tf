@@ -1,7 +1,7 @@
 resource "aws_db_parameter_group" "dory-terraform-test-paramgroup" {
   description = "Database Parameter Group"
   family      = "mysql8.0"
-  name        = "dory-terraform-test-paramgroup"
+  name        = "${var.env}-${var.project_name}-paramgroup"
   parameter {
     name  = "character_set_client"
     value = "utf8mb4"
@@ -54,13 +54,13 @@ resource "aws_db_instance" "dory-terraform-test-rds" {
   engine                                = "mysql"
   engine_version                        = "8.0.28"
   iam_database_authentication_enabled   = false
-  identifier                            = "dory-terraform-test-rds"
+  identifier                            = "${var.env}-${var.project_name}-rds"
   instance_class                        = "db.t3.micro"
   license_model                         = "general-public-license"
   maintenance_window                    = "sun:16:11-sun:16:41"
   multi_az                              = false
   option_group_name                     = "default:mysql-8-0"
-  parameter_group_name                  = "dory-terraform-test-paramgroup"
+  parameter_group_name                  = "${var.env}-${var.project_name}-paramgroup"
   performance_insights_retention_period = 0
   publicly_accessible                   = true
   skip_final_snapshot                   = true

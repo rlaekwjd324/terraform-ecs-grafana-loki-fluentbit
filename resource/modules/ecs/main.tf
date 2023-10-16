@@ -3,10 +3,10 @@ data "aws_iam_role" "ecs_task_execution_role" {
 }
 
 resource "aws_launch_template" "dory-terraform-test-ec2" {
-  name_prefix   = "dory-terraform-test-ec2"
+  name_prefix   = "${var.env}-${var.project_name}-ec2"
   image_id      = "ami-0f6996e691edaec4b"
   instance_type = "t4g.medium"
-  key_name      = "dory-terraform-test-private-ec2-key"
+  key_name      = "${var.env}-${var.project_name}-private-ec2-key"
   vpc_security_group_ids = [aws_security_group.dory-terraform-test-private-ec2.id]
   iam_instance_profile {
     arn= "<ecsInstanceRole>"
@@ -37,7 +37,7 @@ resource "aws_autoscaling_group" "dory-terraform-test-ecs-asg-group" {
 }
 
 resource "aws_ecs_task_definition" "dory-terraform-test-springboot" {
-  family                   = "dory-terraform-test-springboot"
+  family                   = "${var.env}-${var.project_name}-springboot"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = 512
@@ -108,7 +108,7 @@ EOF
 }
 
 resource "aws_ecs_task_definition" "dory-terraform-test-grafana" {
-  family                   = "dory-terraform-test-grafana"
+  family                   = "${var.env}-${var.project_name}-grafana"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = 512
@@ -140,7 +140,7 @@ EOF
 }
 
 resource "aws_ecs_task_definition" "dory-terraform-test-loki" {
-  family                   = "dory-terraform-test-loki"
+  family                   = "${var.env}-${var.project_name}-loki"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = 512
@@ -187,7 +187,7 @@ EOF
 }
 
 resource "aws_ecs_cluster" "dory-terraform-test-ecs-cluster" {
-  name = "dory-terraform-test-ecs-cluster"
+  name = "${var.env}-${var.project_name}-ecs-cluster"
 }
 
 resource "aws_ecs_cluster_capacity_providers" "dory-terraform-test" {
@@ -224,7 +224,7 @@ resource "aws_service_discovery_http_namespace" "dory-terraform-test-ecs-cluster
 }
 
 resource "aws_ecs_service" "dory-terraform-test-loki" {
-  name                               = "dory-terraform-test-loki"
+  name                               = "${var.env}-${var.project_name}-loki"
   cluster                            = aws_ecs_cluster.dory-terraform-test-ecs-cluster.id
   task_definition                    = aws_ecs_task_definition.dory-terraform-test-loki.arn
   desired_count                      = 1
@@ -247,7 +247,7 @@ resource "aws_ecs_service" "dory-terraform-test-loki" {
 }
 
 resource "aws_ecs_service" "dory-terraform-test-grafana" {
-  name                               = "dory-terraform-test-grafana"
+  name                               = "${var.env}-${var.project_name}-grafana"
   cluster                            = aws_ecs_cluster.dory-terraform-test-ecs-cluster.id
   task_definition                    = aws_ecs_task_definition.dory-terraform-test-grafana.arn
   desired_count                      = 1
@@ -264,7 +264,7 @@ resource "aws_ecs_service" "dory-terraform-test-grafana" {
 }
 
 resource "aws_ecs_service" "dory-terraform-test-springboot" {
-  name                               = "dory-terraform-test-springboot"
+  name                               = "${var.env}-${var.project_name}-springboot"
   cluster                            = aws_ecs_cluster.dory-terraform-test-ecs-cluster.id
   task_definition                    = aws_ecs_task_definition.dory-terraform-test-springboot.arn
   desired_count                      = 1
