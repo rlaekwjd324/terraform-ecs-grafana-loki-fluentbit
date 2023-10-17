@@ -89,21 +89,21 @@ resource "aws_alb_listener_rule" "terraform-test-alb-grafana" {
   }
 }
 
-resource "aws_alb_listener_rule" "terraform-test-alb-loki" {
-  listener_arn = aws_alb_listener.terraform-test-alb.arn
+# resource "aws_alb_listener_rule" "terraform-test-alb-loki" {
+#   listener_arn = aws_alb_listener.terraform-test-alb.arn
 
-  condition {
-    query_string {
-      key = "page"
-      value = "loki"
-    }
-  }
+#   condition {
+#     query_string {
+#       key = "page"
+#       value = "loki"
+#     }
+#   }
 
-  action {
-    type             = "forward"
-    target_group_arn = aws_alb_target_group.terraform-test-alb-loki.arn
-  }
-}
+#   action {
+#     type             = "forward"
+#     target_group_arn = aws_alb_target_group.terraform-test-alb-loki.arn
+#   }
+# }
 
 resource "aws_alb_listener_rule" "terraform-test-alb-app" {
   listener_arn = aws_alb_listener.terraform-test-alb.arn
