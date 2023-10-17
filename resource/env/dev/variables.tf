@@ -231,3 +231,34 @@ variable "rds_password" {
   description = "rds password"
   type = "string"
 }
+
+# vpc
+variable "vpc_cidr_bolock" {
+  description = "vpc cidr bolock"
+  type = "string"
+}
+
+variable "public_subnet_1_cidr_block" {
+  description = "public subnet 1 cidr block"
+  type = "string"
+}
+
+variable "public_subnet_5_cidr_block" {
+  description = "public subnet 5 cidr block"
+  type = "string"
+}
+
+variable "private_subnet_3_cidr_block" {
+  description = "private subnet 3 cidr block"
+  type = "string"
+}
+
+variable "public_subnet_2_cidr_block" {
+  description = "public subnet 2 cidr block"
+  type = "string"
+}
+
+variable "public_subnet_6_cidr_block" {
+  description = "public subnet 6 cidr block"
+  type = "string"
+}

@@ -90,4 +90,15 @@ module "sg" {
 
 module "vpc" {
   source   = "../../modules/vpc"
+
+  env                   = var.env
+  project_name          = var.project_name
+  region                = var.region
+
+  vpc_cidr_bolock = var.vpc_cidr_bolock
+  public_subnet_1_cidr_block = var.public_subnet_1_cidr_block
+  public_subnet_5_cidr_block = var.public_subnet_5_cidr_block
+  private_subnet_3_cidr_block = var.private_subnet_3_cidr_block
+  public_subnet_2_cidr_block = var.public_subnet_2_cidr_block
+  public_subnet_6_cidr_block = var.public_subnet_6_cidr_block
 }
