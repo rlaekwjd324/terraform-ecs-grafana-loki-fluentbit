@@ -1,9 +1,3 @@
-provider "aws" {
-  access_key = var.aws_access_key_id
-  secret_key = var.aws_access_secret_key
-  region     = var.region
-}
-
 module "alb" {
   source                = "../../modules/alb"
 

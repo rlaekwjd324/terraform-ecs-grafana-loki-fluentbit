@@ -16,8 +16,8 @@ resource "aws_autoscaling_group" "terraform-test-ecs-asg-group" {
   min_size           = 0
   vpc_zone_identifier = [var.private_subnet_3_id]
 
-  target_group_arns = [var.alb_grafana_arn, var.alb_app_arn
-  #  , var.alb_loki_arn
+  target_group_arns = ["${var.alb_grafana_arn}", "${var.alb_app_arn}"
+  #  , "${var.alb_loki_arn}"
    ]
 
   launch_template {
