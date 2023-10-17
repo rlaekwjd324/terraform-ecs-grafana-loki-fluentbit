@@ -1,7 +1,7 @@
 provider "aws" {
-  access_key = "<AWS_ACCESS_KEY_ID>"
-  secret_key = "<AWS_ACCESS_SECRET_KEY>"
-  region     = "ap-northeast-2"
+  access_key = var.aws_access_key_id
+  secret_key = var.aws_access_secret_key
+  region     = var.region
 }
 
 module "alb" {
@@ -83,6 +83,9 @@ module "rds" {
 
 module "sg" {
   source   = "../../modules/sg"
+
+  env                   = var.env
+  project_name          = var.project_name
 }
 
 module "vpc" {

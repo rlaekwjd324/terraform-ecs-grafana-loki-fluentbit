@@ -1,3 +1,13 @@
+variable "aws_access_key_id" {
+  description = "aws access key id"
+  type = "string"
+}
+
+variable "aws_access_secret_key" {
+  description = "aws access secret key"
+  type = "string"
+}
+
 variable "env" {
   description = "env name"
   type = "string"
