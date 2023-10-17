@@ -2,7 +2,7 @@
 resource "aws_alb" "terraform-test-alb" {
   name            = "${var.env}-${var.project_name}-alb"
   internal        = false
-  security_groups = [aws_security_group.terraform-test-alb.id]
+  security_groups = [var.alb_sg_id]
   subnets         = [var.public_subnet_1_id, var.public_subnet_2_id]
 
   lifecycle { create_before_destroy = true }

@@ -10,6 +10,7 @@ module "alb" {
   vpc_id                = module.vpc.vpc_id
   public_subnet_1_id    = module.vpc.public_subnet_1_id
   public_subnet_2_id    = module.vpc.public_subnet_2_id
+  alb_sg_id             = module.sg.alb_sg_id
 
   env                   = var.env
   project_name          = var.project_name
@@ -28,6 +29,7 @@ module "ec2" {
   source                      = "../../modules/ec2"
   
   public_subnet_1_id          = module.vpc.public_subnet_1_id
+  public_ec2_sg_id            = module.sg.public_ec2_sg_id
 
   env                         = var.env
   project_name                = var.project_name
@@ -43,6 +45,7 @@ module "ecs" {
   source                                  = "../../modules/ecs"
 
   private_subnet_3_id                     = module.vpc.private_subnet_3_id
+  private_ec2_sg_id                       = module.sg.private_ec2_sg_id
   
   env                                     = var.env
   project_name                            = var.project_name
@@ -86,6 +89,8 @@ module "ecs" {
 
 module "rds" {
   source                = "../../modules/rds"
+
+  rds_sg_id             = module.sg.rds_sg_id
 
   env                   = var.env
   project_name          = var.project_name

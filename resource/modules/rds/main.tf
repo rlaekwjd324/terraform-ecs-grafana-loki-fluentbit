@@ -68,5 +68,5 @@ resource "aws_db_instance" "terraform-test-rds" {
   storage_type                          = "${var.rds_storage_type}"
   username                              = "${var.rds_username}"
   password                              = "${var.rds_password}"
-  vpc_security_group_ids                = [aws_security_group.terraform-test-rds-security-group.id]
+  vpc_security_group_ids                = [var.rds_sg_id]
 }

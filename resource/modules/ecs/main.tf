@@ -3,7 +3,7 @@ resource "aws_launch_template" "terraform-test-ec2" {
   image_id      = "${var.ecs_instance_ami}"
   instance_type = "${var.ecs_instance_type}"
   key_name      = "${var.env}-${var.project_name}-private-ec2-key"
-  vpc_security_group_ids = [aws_security_group.terraform-test-private-ec2.id]
+  vpc_security_group_ids = [var.private_ec2_sg_id]
   iam_instance_profile {
     arn= "${var.ecs_instance_role_arn}"
   }

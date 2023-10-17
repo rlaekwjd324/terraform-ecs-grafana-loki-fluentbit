@@ -29,7 +29,7 @@ resource "aws_instance" "terraform-test-public-ec2-bastion-host" {
     Name = "${var.env}-${var.project_name}-public-ec2-bastion-host"
   }
   tenancy                = "default"
-  vpc_security_group_ids = [aws_security_group.terraform-test-public-ec2.id]
+  vpc_security_group_ids = [var.public_ec2_sg_id]
 }
 
 resource "aws_key_pair" "terraform-test-bastion-host-key" {
