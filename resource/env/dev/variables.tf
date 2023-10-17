@@ -175,3 +175,49 @@ variable "loki_dns_name" {
   description = "loki dns name"
   type = "string"
 }
+
+# rds
+variable "rds_paramgroup_family" {
+  description = "rds parameter group family"
+  type = "string"
+}
+
+variable "rds_engine" {
+  description = "rds engine"
+  type = "string"
+}
+
+variable "rds_engine_version" {
+  description = "rds engine version"
+  type = "string"
+}
+
+variable "rds_instance_class" {
+  description = "rds instance class"
+  type = "string"
+}
+
+variable "rds_option_group_name" {
+  description = "rds option group name"
+  type = "string"
+}
+
+variable "rds_storage_type" {
+  description = "rds storage type"
+  type = "string"
+}
+
+variable "rds_db_name" {
+  description = "rds db name"
+  type = "string"
+}
+
+variable "rds_username" {
+  description = "rds user name"
+  type = "string"
+}
+
+variable "rds_password" {
+  description = "rds password"
+  type = "string"
+}

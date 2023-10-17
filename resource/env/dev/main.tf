@@ -66,6 +66,19 @@ module "ecs" {
 
 module "rds" {
   source   = "../../modules/rds"
+
+  env                   = var.env
+  project_name          = var.project_name
+  region                = var.region
+
+  rds_paramgroup_family = var.rds_paramgroup_family
+  rds_engine_version = var.rds_engine_version
+  rds_instance_class = var.rds_instance_class
+  rds_option_group_name = var.rds_option_group_name
+  rds_storage_type = var.rds_storage_type
+  rds_db_name = var.rds_db_name
+  rds_username = var.rds_username
+  rds_password = var.rds_password
 }
 
 module "sg" {
