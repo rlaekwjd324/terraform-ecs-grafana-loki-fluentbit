@@ -232,6 +232,12 @@ variable "rds_password" {
   type = "string"
 }
 
+# sg
+variable "vpc_ssh_ingress_cidr_block" {
+  description = "vpc ssh ingress cidr block"
+  type = "string"
+}
+
 # vpc
 variable "vpc_cidr_bolock" {
   description = "vpc cidr bolock"

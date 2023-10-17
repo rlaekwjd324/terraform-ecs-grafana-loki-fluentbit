@@ -38,7 +38,7 @@ resource "aws_security_group" "terraform-test-public-ec2" {
     to_port     = 0
   }
   ingress {
-    cidr_blocks = ["10.5.0.0/32"]
+    cidr_blocks = ["${var.vpc_ssh_ingress_cidr_block}"]
     from_port   = 22
     protocol    = "tcp"
     to_port     = 22
@@ -96,7 +96,7 @@ resource "aws_security_group" "terraform-test-rds-security-group" {
     to_port     = 0
   }
   ingress {
-    cidr_blocks     = ["10.5.0.0/32"]
+    cidr_blocks     = ["${var.vpc_ssh_ingress_cidr_block}"]
     from_port       = 3306
     protocol        = "tcp"
     security_groups = [aws_security_group.terraform-test-private-ec2.id]
