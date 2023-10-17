@@ -46,6 +46,9 @@ module "ecs" {
 
   private_subnet_3_id                     = module.vpc.private_subnet_3_id
   private_ec2_sg_id                       = module.sg.private_ec2_sg_id
+  alb_grafana_arn                         = module.alb.alb_grafana_arn
+  alb_app_arn                             = module.alb.alb_app_arn
+  alb_loki_arn                            = module.alb.alb_loki_arn
   
   env                                     = var.env
   project_name                            = var.project_name
