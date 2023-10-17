@@ -15,7 +15,11 @@ module "alb" {
 }
 
 module "ec2" {
-  source   = "../../modules/ec2"
+  source                      = "../../modules/ec2"
+  env                         = var.env
+  project_name                = var.project_name
+  bastion_host_instance_ami   = var.bastion_host_instance_ami
+  bastion_host_instance_type  = var.bastion_host_instance_type
 }
 
 module "ecs" {

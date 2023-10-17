@@ -1,13 +1,4 @@
 variable "env" {}
 variable "project_name" {}
-
-
-variable "env" {
-  description = "env name"
-  default     = "dev"
-}
-
-variable "project_name" {
-  description = "env name"
-  default     = "terraform-template"
-}
+variable "bastion_host_instance_ami" {}
+variable "bastion_host_instance_type" {}
