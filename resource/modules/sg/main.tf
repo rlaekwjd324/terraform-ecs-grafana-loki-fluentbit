@@ -24,9 +24,7 @@ resource "aws_security_group" "terraform-test-private-ec2" {
   tags = {
     Name = "${var.env}-${var.project_name}-private-ec2"
   }
-  vpc_id = aws_vpc.terraform-test-vpc.id
-
-  depends_on = [aws_vpc.terraform-test-vpc]
+  vpc_id = var.vpc_id
 }
 
 resource "aws_security_group" "terraform-test-public-ec2" {
@@ -47,9 +45,7 @@ resource "aws_security_group" "terraform-test-public-ec2" {
   tags = {
     Name = "${var.env}-${var.project_name}-public-ec2"
   }
-  vpc_id = aws_vpc.terraform-test-vpc.id
-
-  depends_on = [aws_vpc.terraform-test-vpc]
+  vpc_id = var.vpc_id
 }
 
 resource "aws_security_group" "terraform-test-alb" {
@@ -82,9 +78,7 @@ resource "aws_security_group" "terraform-test-alb" {
   tags = {
     Name = "${var.env}-${var.project_name}-alb"
   }
-  vpc_id = aws_vpc.terraform-test-vpc.id
-
-  depends_on = [aws_vpc.terraform-test-vpc]
+  vpc_id = var.vpc_id
 }
 
 resource "aws_security_group" "terraform-test-rds-security-group" {
@@ -106,5 +100,5 @@ resource "aws_security_group" "terraform-test-rds-security-group" {
   tags = {
     Name = "${var.env}-${var.project_name}-rds-sg"
   }
-  vpc_id = aws_vpc.terraform-test-vpc.id
+  vpc_id = var.vpc_id
 }

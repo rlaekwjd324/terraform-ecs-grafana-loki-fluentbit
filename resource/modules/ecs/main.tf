@@ -1,7 +1,3 @@
-data "aws_iam_role" "ecs_task_execution_role" {
-  name = "${var.ecs_task_role}"
-}
-
 resource "aws_launch_template" "terraform-test-ec2" {
   name_prefix   = "${var.env}-${var.project_name}-ec2"
   image_id      = "${var.ecs_instance_ami}"
@@ -18,7 +14,7 @@ resource "aws_autoscaling_group" "terraform-test-ecs-asg-group" {
   desired_capacity   = 1
   max_size           = 1
   min_size           = 0
-  vpc_zone_identifier = [aws_subnet.terraform-test-private-subnet-3.id]
+  vpc_zone_identifier = [var.private_subnet_3_id]
 
   target_group_arns = [aws_alb_target_group.terraform-test-alb-grafana.arn, aws_alb_target_group.terraform-test-alb-app.arn
   #  , aws_alb_target_group.terraform-test-alb-loki.arn
@@ -34,18 +30,14 @@ resource "aws_autoscaling_group" "terraform-test-ecs-asg-group" {
     value               = ""
     propagate_at_launch = true
   }
-
-  depends_on = [aws_alb_target_group.terraform-test-alb-grafana, aws_alb_target_group.terraform-test-alb-app
-  # , aws_alb_target_group.terraform-test-alb-loki
-  ]
 }
 
 resource "aws_ecs_task_definition" "terraform-test-springboot" {
   family                   = "${var.env}-${var.project_name}-springboot"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
-  cpu                      = ${var.task_definition_app_cpu}
-  memory                   = ${var.task_definition_app_memory}
+  cpu                      = "${var.task_definition_app_cpu}"
+  memory                   = "${var.task_definition_app_memory}"
   execution_role_arn       = "${var.ecs_task_role}"
   task_role_arn            = "${var.ecs_task_role_logging}"
 
@@ -115,8 +107,8 @@ resource "aws_ecs_task_definition" "terraform-test-grafana" {
   family                   = "${var.env}-${var.project_name}-grafana"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
-  cpu                      = ${var.task_definition_grafana_cpu}
-  memory                   = ${var.task_definition_grafana_memory}
+  cpu                      = "${var.task_definition_grafana_cpu}"
+  memory                   = "${var.task_definition_grafana_memory}"
   execution_role_arn       = "${var.ecs_task_role}"
   task_role_arn            = "${var.ecs_task_role_logging}"
 
@@ -147,8 +139,8 @@ resource "aws_ecs_task_definition" "terraform-test-loki" {
   family                   = "${var.env}-${var.project_name}-loki"
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
-  cpu                      = ${var.task_definition_loki_cpu}
-  memory                   = ${var.task_definition_loki_memory}
+  cpu                      = "${var.task_definition_loki_cpu}"
+  memory                   = "${var.task_definition_loki_memory}"
   execution_role_arn       = "${var.ecs_task_role}"
   task_role_arn            = "${var.ecs_task_role_logging}"
 
@@ -244,7 +236,7 @@ resource "aws_ecs_service" "terraform-test-loki" {
       port_name      = "${var.loki_dns_name}-${var.loki_host_port}-tcp"
       client_alias {
         dns_name = "${var.loki_dns_name}"
-        port     = ${var.loki_host_port}
+        port     = "${var.loki_host_port}"
       }
     }
   }

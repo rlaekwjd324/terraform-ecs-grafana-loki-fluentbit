@@ -7,6 +7,10 @@ provider "aws" {
 module "alb" {
   source                = "../../modules/alb"
 
+  vpc_id                = module.vpc.vpc_id
+  public_subnet_1_id    = module.vpc.public_subnet_1_id
+  public_subnet_2_id    = module.vpc.public_subnet_2_id
+
   env                   = var.env
   project_name          = var.project_name
   grafana_host_port     = var.grafana_host_port
@@ -22,6 +26,8 @@ module "alb" {
 
 module "ec2" {
   source                      = "../../modules/ec2"
+  
+  public_subnet_1_id          = module.vpc.public_subnet_1_id
 
   env                         = var.env
   project_name                = var.project_name
@@ -35,6 +41,8 @@ module "ec2" {
 
 module "ecs" {
   source                                  = "../../modules/ecs"
+
+  private_subnet_3_id                     = module.vpc.private_subnet_3_id
   
   env                                     = var.env
   project_name                            = var.project_name
@@ -48,7 +56,6 @@ module "ecs" {
   loki_container_port_2                   = var.loki_container_port_2
   loki_container_port_3                   = var.loki_container_port_3
 
-  ecs_task_role                           = var.ecs_task_role
   ecs_instance_role_arn                   = var.ecs_instance_role_arn
   ecs_instance_ami                        = var.ecs_instance_ami
   ecs_instance_type                       = var.ecs_instance_type
@@ -101,6 +108,8 @@ module "rds" {
 
 module "sg" {
   source                     = "../../modules/sg"
+
+  vpc_id                     = module.vpc.vpc_id
 
   env                        = var.env
   project_name               = var.project_name

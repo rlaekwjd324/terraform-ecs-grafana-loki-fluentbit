@@ -3,16 +3,16 @@ resource "aws_alb" "terraform-test-alb" {
   name            = "${var.env}-${var.project_name}-alb"
   internal        = false
   security_groups = [aws_security_group.terraform-test-alb.id]
-  subnets         = [aws_subnet.terraform-test-public-subnet-1.id, aws_subnet.terraform-test-public-subnet-2.id]
+  subnets         = [var.public_subnet_1_id, var.public_subnet_2_id]
 
   lifecycle { create_before_destroy = true }
 }
 
 resource "aws_alb_target_group" "terraform-test-alb-grafana" {
   name     = "${var.env}-${var.project_name}-tg-grafana"
-  port     = ${var.grafana_host_port}
+  port     = var.grafana_host_port
   protocol = "HTTP"
-  vpc_id   = aws_vpc.terraform-test-vpc.id
+  vpc_id   = var.vpc_id
 
   health_check {
     interval            = 30
@@ -24,9 +24,9 @@ resource "aws_alb_target_group" "terraform-test-alb-grafana" {
 
 resource "aws_alb_target_group" "terraform-test-alb-app" {
   name     = "${var.env}-${var.project_name}-tg-app"
-  port     = ${var.app_host_port}
+  port     = var.app_host_port
   protocol = "HTTP"
-  vpc_id   = aws_vpc.terraform-test-vpc.id
+  vpc_id   = var.vpc_id
 
   health_check {
     interval            = 30
@@ -38,7 +38,7 @@ resource "aws_alb_target_group" "terraform-test-alb-app" {
 
 resource "aws_alb_listener" "terraform-test-alb" {
   load_balancer_arn = aws_alb.terraform-test-alb.arn
-  port              = ${var.alb_listener_port}
+  port              = var.alb_listener_port
   protocol          = "HTTP"
 
   # By default, return a simple 404 page

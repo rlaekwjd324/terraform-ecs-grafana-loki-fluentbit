@@ -24,7 +24,7 @@ resource "aws_instance" "terraform-test-public-ec2-bastion-host" {
     volume_size = 8
     volume_type = "gp3"
   }
-  subnet_id = aws_subnet.terraform-test-public-subnet-1.id
+  subnet_id = var.public_subnet_1_id
   tags = {
     Name = "${var.env}-${var.project_name}-public-ec2-bastion-host"
   }
