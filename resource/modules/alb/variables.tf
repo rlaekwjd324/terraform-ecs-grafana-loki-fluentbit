@@ -1,13 +1,6 @@
 variable "env" {}
 variable "project_name" {}
-
-
-variable "env" {
-  description = "env name"
-  default     = "dev"
-}
-
-variable "project_name" {
-  description = "env name"
-  default     = "terraform-template"
-}
+variable "grafana_host_port" {}
+variable "app_host_port" {}
+variable "alb_listener_port" {}
+variable "alb_health_check_path" {}

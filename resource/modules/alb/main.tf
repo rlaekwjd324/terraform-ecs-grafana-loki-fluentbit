@@ -1,18 +1,18 @@
 /* alb 설정 */
-resource "aws_alb" "dory-terraform-test-alb" {
+resource "aws_alb" "terraform-test-alb" {
   name            = "${var.env}-${var.project_name}-alb"
   internal        = false
-  security_groups = [aws_security_group.dory-terraform-test-alb.id]
-  subnets         = [aws_subnet.dory-terraform-test-public-subnet-1.id, aws_subnet.dory-terraform-test-public-subnet-2.id]
+  security_groups = [aws_security_group.terraform-test-alb.id]
+  subnets         = [aws_subnet.terraform-test-public-subnet-1.id, aws_subnet.terraform-test-public-subnet-2.id]
 
   lifecycle { create_before_destroy = true }
 }
 
-resource "aws_alb_target_group" "dory-terraform-test-alb-grafana" {
+resource "aws_alb_target_group" "terraform-test-alb-grafana" {
   name     = "${var.env}-${var.project_name}-tg-grafana"
-  port     = 3000
+  port     = ${var.grafana_host_port}
   protocol = "HTTP"
-  vpc_id   = aws_vpc.dory-terraform-test-vpc.id
+  vpc_id   = aws_vpc.terraform-test-vpc.id
 
   health_check {
     interval            = 30
@@ -22,37 +22,23 @@ resource "aws_alb_target_group" "dory-terraform-test-alb-grafana" {
   }
 }
 
-resource "aws_alb_target_group" "dory-terraform-test-alb-app" {
+resource "aws_alb_target_group" "terraform-test-alb-app" {
   name     = "${var.env}-${var.project_name}-tg-app"
-  port     = 3033
+  port     = ${var.app_host_port}
   protocol = "HTTP"
-  vpc_id   = aws_vpc.dory-terraform-test-vpc.id
+  vpc_id   = aws_vpc.terraform-test-vpc.id
 
   health_check {
     interval            = 30
-    path                = "/health/check"
+    path                = "${var.alb_health_check_path}"
     healthy_threshold   = 3
     unhealthy_threshold = 3
   }
 }
 
-resource "aws_alb_target_group" "dory-terraform-test-alb-loki" {
-  name     = "${var.env}-${var.project_name}-tg-loki"
-  port     = 3100
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.dory-terraform-test-vpc.id
-
-  health_check {
-    interval            = 30
-    path                = "/"
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
-  }
-}
-
-resource "aws_alb_listener" "dory-terraform-test-alb" {
-  load_balancer_arn = aws_alb.dory-terraform-test-alb.arn
-  port              = 80
+resource "aws_alb_listener" "terraform-test-alb" {
+  load_balancer_arn = aws_alb.terraform-test-alb.arn
+  port              = ${var.alb_listener_port}
   protocol          = "HTTP"
 
   # By default, return a simple 404 page
@@ -68,7 +54,7 @@ resource "aws_alb_listener" "dory-terraform-test-alb" {
 }
 
 resource "aws_lb_listener_rule" "redirect_http_to_https" {
-  listener_arn = aws_alb_listener.dory-terraform-test-alb.arn
+  listener_arn = aws_alb_listener.terraform-test-alb.arn
 
   action {
     type = "redirect"
@@ -88,8 +74,8 @@ resource "aws_lb_listener_rule" "redirect_http_to_https" {
   }
 }
 
-resource "aws_alb_listener_rule" "dory-terraform-test-alb-grafana" {
-  listener_arn = aws_alb_listener.dory-terraform-test-alb.arn
+resource "aws_alb_listener_rule" "terraform-test-alb-grafana" {
+  listener_arn = aws_alb_listener.terraform-test-alb.arn
 
   condition {
     path_pattern {
@@ -99,12 +85,12 @@ resource "aws_alb_listener_rule" "dory-terraform-test-alb-grafana" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.dory-terraform-test-alb-grafana.arn
+    target_group_arn = aws_alb_target_group.terraform-test-alb-grafana.arn
   }
 }
 
-resource "aws_alb_listener_rule" "dory-terraform-test-alb-loki" {
-  listener_arn = aws_alb_listener.dory-terraform-test-alb.arn
+resource "aws_alb_listener_rule" "terraform-test-alb-loki" {
+  listener_arn = aws_alb_listener.terraform-test-alb.arn
 
   condition {
     query_string {
@@ -115,12 +101,12 @@ resource "aws_alb_listener_rule" "dory-terraform-test-alb-loki" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.dory-terraform-test-alb-loki.arn
+    target_group_arn = aws_alb_target_group.terraform-test-alb-loki.arn
   }
 }
 
-resource "aws_alb_listener_rule" "dory-terraform-test-alb-app" {
-  listener_arn = aws_alb_listener.dory-terraform-test-alb.arn
+resource "aws_alb_listener_rule" "terraform-test-alb-app" {
+  listener_arn = aws_alb_listener.terraform-test-alb.arn
 
   condition {
     query_string {
@@ -131,6 +117,6 @@ resource "aws_alb_listener_rule" "dory-terraform-test-alb-app" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.dory-terraform-test-alb-app.arn
+    target_group_arn = aws_alb_target_group.terraform-test-alb-app.arn
   }
 }
