@@ -83,10 +83,9 @@ resource "aws_route_table" "terraform-test-public-rt" {
 }
 
 resource "aws_eip" "terraform-test-nat-eip" {
-    domain = "vpc"
-    tags = {
-        Name = "${var.env}-${var.project_name}-nat-eip"    
-    }
+  tags = {
+      Name = "${var.env}-${var.project_name}-nat-eip"    
+  }
 }
 
 resource "aws_nat_gateway" "terraform-test-nat" {

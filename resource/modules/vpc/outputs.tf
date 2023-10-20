@@ -16,3 +16,6 @@ output "public_subnet_5_id" {
 output "public_subnet_6_id" {
   value = aws_subnet.terraform-test-public-subnet-6.id
 }
+output "rds_subnet_group_id" {
+  value = aws_db_subnet_group.terraform-test-rds-subnet-group.id
+}

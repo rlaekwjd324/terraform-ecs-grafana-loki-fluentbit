@@ -49,7 +49,7 @@ resource "aws_db_instance" "terraform-test-rds" {
   copy_tags_to_snapshot                 = false
   customer_owned_ip_enabled             = false
   db_name                               = "${var.rds_db_name}"
-  db_subnet_group_name                  = aws_db_subnet_group.terraform-test-rds-subnet-group.id
+  db_subnet_group_name                  = var.rds_subnet_group_id
   deletion_protection                   = false
   engine                                = "${var.rds_engine}"
   engine_version                        = "${var.rds_engine_version}8.0.28"

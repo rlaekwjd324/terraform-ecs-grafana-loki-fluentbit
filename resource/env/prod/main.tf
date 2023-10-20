@@ -14,8 +14,7 @@ module "alb" {
   alb_health_check_path = var.alb_health_check_path
 
   depends_on = [
-    module.vpc,
-    module.ecs
+    module.vpc
   ]
 }
 
@@ -40,6 +39,9 @@ module "ecs" {
 
   private_subnet_3_id                     = module.vpc.private_subnet_3_id
   private_ec2_sg_id                       = module.sg.private_ec2_sg_id
+  alb_grafana_arn                         = module.alb.alb_grafana_arn
+  alb_app_arn                             = module.alb.alb_app_arn
+  /* alb_loki_arn                            = module.alb.alb_loki_arn */
   
   env                                     = var.env
   project_name                            = var.project_name
@@ -85,12 +87,14 @@ module "rds" {
   source                = "../../modules/rds"
 
   rds_sg_id             = module.sg.rds_sg_id
+  rds_subnet_group_id   = module.vpc.rds_subnet_group_id
 
   env                   = var.env
   project_name          = var.project_name
   region                = var.region
 
   rds_paramgroup_family = var.rds_paramgroup_family
+  rds_engine            = var.rds_engine
   rds_engine_version    = var.rds_engine_version
   rds_instance_class    = var.rds_instance_class
   rds_option_group_name = var.rds_option_group_name

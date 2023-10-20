@@ -1,4 +1,4 @@
-FROM grafana/loki:main-a05744a-arm64
+FROM grafana/loki:main
 
 COPY loki-config.yaml /etc/loki/config.yaml
 

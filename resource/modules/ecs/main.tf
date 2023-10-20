@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "terraform-test-springboot" {
             {
                 "name": "${var.task_definition_app_container_name}-${var.app_host_port}-tcp",
                 "containerPort": ${var.app_container_port},
-                "hostPort": ${var.app_host_port}",
+                "hostPort": ${var.app_host_port},
                 "protocol": "tcp",
                 "appProtocol": "http"
             }

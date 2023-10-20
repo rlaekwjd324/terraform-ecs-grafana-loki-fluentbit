@@ -1,3 +1,9 @@
+variable "private_subnet_3_id" {}
+variable "private_ec2_sg_id" {}
+variable "alb_grafana_arn" {}
+variable "alb_app_arn" {}
+/* variable "alb_loki_arn" {} */
+
 variable "env" {}
 variable "project_name" {}
 variable "region" {}
