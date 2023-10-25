@@ -5,7 +5,7 @@ resource "aws_launch_template" "terraform-test-ec2" {
   key_name      = "${var.env}-${var.project_name}-private-ec2-key"
   vpc_security_group_ids = [var.private_ec2_sg_id]
   iam_instance_profile {
-    arn= "${var.ecs_instance_role_arn}"
+    arn= "${var.ecs_instance_role_profile_arn}"
   }
   user_data = filebase64("./launch_template.sh")
 }

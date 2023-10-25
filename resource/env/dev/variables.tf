@@ -91,6 +91,11 @@ variable "ecs_instance_role_arn" {
   type = string
 }
 
+variable "ecs_instance_role_profile_arn" {
+  description = "ecs instance role arn"
+  type = string
+}
+
 variable "ecs_instance_ami" {
   description = "ecs instance ami"
   type = string

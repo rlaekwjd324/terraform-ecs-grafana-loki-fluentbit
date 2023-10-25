@@ -17,6 +17,7 @@ variable "loki_container_port_2" {}
 variable "loki_container_port_3" {}
 
 variable "ecs_instance_role_arn" {}
+variable "ecs_instance_role_profile_arn" {}
 variable "ecs_instance_ami" {}
 variable "ecs_instance_type" {}
 variable "ecs_task_role" {}

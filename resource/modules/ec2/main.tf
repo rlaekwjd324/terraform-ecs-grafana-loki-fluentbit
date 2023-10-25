@@ -14,6 +14,7 @@ resource "aws_instance" "terraform-test-public-ec2-bastion-host" {
   instance_type                        = "${var.bastion_host_instance_type}"
   key_name                             = "${var.env}-${var.project_name}-bastion-host-key"
   metadata_options {
+    http_endpoint = "enabled"
     http_put_response_hop_limit = 2
     http_tokens                 = "required"
   }

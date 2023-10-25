@@ -56,6 +56,7 @@ module "ecs" {
   loki_container_port_3                   = var.loki_container_port_3
 
   ecs_instance_role_arn                   = var.ecs_instance_role_arn
+  ecs_instance_role_profile_arn           = var.ecs_instance_role_profile_arn
   ecs_instance_ami                        = var.ecs_instance_ami
   ecs_instance_type                       = var.ecs_instance_type
   ecs_task_role                           = var.ecs_task_role
