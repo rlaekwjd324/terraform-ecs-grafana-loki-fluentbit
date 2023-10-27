@@ -1,3 +1,11 @@
+data "template_file" "terraform-test-userdata" {
+  template = "${filebase64("./launch_template.sh")}"
+  vars = {
+    env = "${var.env}"
+    project_name = "${var.project_name}"
+  }
+}
+
 resource "aws_launch_template" "terraform-test-ec2" {
   name_prefix   = "${var.env}-${var.project_name}-ec2"
   image_id      = "${var.ecs_instance_ami}"
@@ -7,7 +15,7 @@ resource "aws_launch_template" "terraform-test-ec2" {
   iam_instance_profile {
     arn= "${var.ecs_instance_role_profile_arn}"
   }
-  user_data = filebase64("./launch_template.sh")
+  user_data = "${data.template_file.terraform-test-userdata.rendered}"
 }
 
 resource "aws_autoscaling_group" "terraform-test-ecs-asg-group" {

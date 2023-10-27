@@ -1,17 +1,4 @@
-terraform {
-    required_providers {
-        grafana = {
-            source = "grafana/grafana"
-            version = ">= 1.28.2"
-        }
-    }
-}
-
-provider "grafana" {
-    url = <YOUR_GRAFANA_URL>
-    auth = <YOUR_GRAFANA_API_KEY>
-}
-
+# https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/contact_point
 resource "grafana_contact_point" "my_slack_contact_point" {
     name = "Send to My Slack Channel"
 

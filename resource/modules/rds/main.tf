@@ -42,7 +42,7 @@ resource "aws_db_parameter_group" "terraform-test-paramgroup" {
 
 resource "aws_db_instance" "terraform-test-rds" {
   allocated_storage                     = 5
-  availability_zone                     = "${var.region}"
+  availability_zone                     = "${var.region}a"
   backup_retention_period               = 1
   backup_window                         = "19:20-19:50"
   ca_cert_identifier                    = "rds-ca-2019"
@@ -52,14 +52,13 @@ resource "aws_db_instance" "terraform-test-rds" {
   db_subnet_group_name                  = var.rds_subnet_group_id
   deletion_protection                   = false
   engine                                = "${var.rds_engine}"
-  engine_version                        = "${var.rds_engine_version}8.0.28"
+  engine_version                        = "${var.rds_engine_version}"
   iam_database_authentication_enabled   = false
   identifier                            = "${var.env}-${var.project_name}-rds"
   instance_class                        = "${var.rds_instance_class}"
   license_model                         = "general-public-license"
   maintenance_window                    = "sun:16:11-sun:16:41"
   multi_az                              = false
-  option_group_name                     = "${var.rds_option_group_name}"
   parameter_group_name                  = "${var.env}-${var.project_name}-paramgroup"
   performance_insights_retention_period = 0
   publicly_accessible                   = true
@@ -69,4 +68,8 @@ resource "aws_db_instance" "terraform-test-rds" {
   username                              = "${var.rds_username}"
   password                              = "${var.rds_password}"
   vpc_security_group_ids                = [var.rds_sg_id]
+
+  depends_on = [
+    aws_db_parameter_group.terraform-test-paramgroup
+  ]
 }

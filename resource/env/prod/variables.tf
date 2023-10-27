@@ -207,11 +207,6 @@ variable "rds_instance_class" {
   type = string
 }
 
-variable "rds_option_group_name" {
-  description = "rds option group name"
-  type = string
-}
-
 variable "rds_storage_type" {
   description = "rds storage type"
   type = string

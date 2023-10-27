@@ -17,38 +17,38 @@ data "aws_kms_alias" "terraform-test-kms-alias" {
 #--------------------------------------------------------------
 # CodeBuild Role Policy
 #--------------------------------------------------------------
-data "template_file" "codebuild_assume" {
-  template = "${file("./policies/codebuild_assume_policy.json.tpl")}"
+data "template_file" "terraform-test-codebuild-assume" {
+  template = "${file("../../modules/cicd/policies/codebuild_assume_policy.json.tpl")}"
 }
-resource "aws_iam_role" "codebuild_role" {
+resource "aws_iam_role" "terraform-test-codebuild-role" {
   name               = "codebuild-role"
-  assume_role_policy = "${data.template_file.codebuild_assume.rendered}"
+  assume_role_policy = "${data.template_file.terraform-test-codebuild-assume.rendered}"
 }
 
-data "template_file" "codebuild_policy" {
-  template = "${file("./policies/codebuild_policy.json.tpl")}"
+data "template_file" "terraform-test-codebuild-policy" {
+  template = "${file("../../modules/cicd/policies/codebuild_policy.json.tpl")}"
 
   vars = {
-    account_id     = "${var.account_id}"
-    codebuild_name = "${var.env}-${var.project_name}-build-project"
-    bucket_name    = "${var.env}-${var.project_name}-codepipeline-${var.region}-artifact"
+    account_id            = "${var.account_id}"
+    region                = "${var.region}"
+    artifact_bucket_name  = "${var.env}-${var.project_name}-codepipeline-${var.region}-artifact"
   }
 }
 
-resource "aws_iam_role_policy" "codebuild_policy" {
+resource "aws_iam_role_policy" "terraform-test-codebuild-policy" {
   name   = "codebuild-role-policy"
-  role   = "${aws_iam_role.codebuild_role.id}"
-  policy = "${data.template_file.codebuild_policy.rendered}"
+  role   = "${aws_iam_role.terraform-test-codebuild-role.id}"
+  policy = "${data.template_file.terraform-test-codebuild-policy.rendered}"
 }
 
 #--------------------------------------------------------------
 # CodeBuild Settings
 #--------------------------------------------------------------
-resource "aws_codebuild_project" "main_build" {
+resource "aws_codebuild_project" "terraform-test-codebuild" {
   name          = "${var.env}-${var.project_name}-build-project"
   description   = "create for codepipeline stage"
   build_timeout = "60"
-  service_role  = "${aws_iam_role.codebuild_role.arn}"
+  service_role  = "${aws_iam_role.terraform-test-codebuild-role.arn}"
 
   artifacts {
     type = "CODEPIPELINE"
@@ -71,43 +71,43 @@ resource "aws_codebuild_project" "main_build" {
 #--------------------------------------------------------------
 # CodePipeline Role
 #--------------------------------------------------------------
-data "template_file" "codepipeline_assume" {
-  template = "${file("./policies/codepipeline_assume_policy.json.tpl")}"
+data "template_file" "terraform-test-codepipeline-assume" {
+  template = "${file("../../modules/cicd/policies/codepipeline_assume_policy.json.tpl")}"
 }
 
-resource "aws_iam_role" "codepipeline_role" {
-  name               = "codepipeline-role"
-  assume_role_policy = "${data.template_file.codepipeline_assume.rendered}"
+resource "aws_iam_role" "terraform-test-codepipeline-role" {
+  name               = "${var.env}-${var.project_name}-codepipeline-role"
+  assume_role_policy = "${data.template_file.terraform-test-codepipeline-assume.rendered}"
 }
 
-data "template_file" "codepipeline_policy" {
-  template = "${file("./policies/codepipeline_policy.json.tpl")}"
+data "template_file" "terraform-test-codepipeline-policy" {
+  template = "${file("../../modules/cicd/policies/codepipeline_policy.json.tpl")}"
 }
 
-resource "aws_iam_role_policy" "codepipeline_policy" {
+resource "aws_iam_role_policy" "terraform-test-codepipeline-policy" {
   name   = "codepipeline-role-policy"
-  role   = "${aws_iam_role.codepipeline_role.id}"
-  policy = "${data.template_file.codepipeline_policy.rendered}"
+  role   = "${aws_iam_role.terraform-test-codepipeline-role.id}"
+  policy = "${data.template_file.terraform-test-codepipeline-policy.rendered}"
 }
 
-data "template_file" "codepipeline_s3_policy" {
-  template = "${file("./policies/codepipeline_s3_policy.json.tpl")}"
+data "template_file" "terraform-test-codepipeline-s3-policy" {
+  template = "${file("../../modules/cicd/policies/codepipeline_s3_policy.json.tpl")}"
   vars = {
-    bucket_name = "${var.env}-${var.project_name}-codepipeline-${var.region}-artifact"
+    artifact_bucket_name = "${var.env}-${var.project_name}-codepipeline-${var.region}-artifact"
   }
 }
 
-resource "aws_s3_bucket_policy" "codepipeline_s3_policy" {
+resource "aws_s3_bucket_policy" "terraform-test-codepipeline-s3-policy" {
   bucket = "${aws_s3_bucket.terraform-test-s3-artifact.id}"
-  policy = "${data.template_file.codepipeline_s3_policy.rendered}"
+  policy = "${data.template_file.terraform-test-codepipeline-s3-policy.rendered}"
 }
 
 #--------------------------------------------------------------
 # CodePipeline Settings
 #--------------------------------------------------------------
-resource "aws_codepipeline" "main" {
-  name     = "codepipeline-main"
-  role_arn = "${aws_iam_role.codepipeline_role.arn}"
+resource "aws_codepipeline" "terraform-test-codepipeline" {
+  name     = "${var.env}-${var.project_name}-codepipeline-main"
+  role_arn = "${aws_iam_role.terraform-test-codepipeline-role.arn}"
 
   artifact_store {
     location = "${aws_s3_bucket.terraform-test-s3-artifact.bucket}"

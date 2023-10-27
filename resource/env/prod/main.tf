@@ -98,7 +98,6 @@ module "rds" {
   rds_engine            = var.rds_engine
   rds_engine_version    = var.rds_engine_version
   rds_instance_class    = var.rds_instance_class
-  rds_option_group_name = var.rds_option_group_name
   rds_storage_type      = var.rds_storage_type
   rds_db_name           = var.rds_db_name
   rds_username          = var.rds_username
