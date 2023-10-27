@@ -268,3 +268,31 @@ variable "public_subnet_6_cidr_block" {
   description = "public subnet 6 cidr block"
   type = string
 }
+
+# ci/cd
+variable "account_id" {
+  description = "account id"
+  type = string
+}
+
+variable "github_account_name" {
+  description = "github account name"
+  type = string
+}
+variable "github_token" {
+  description = "github token"
+  type = string
+}
+variable "github_repository" {
+  description = "github repository"
+  type = string
+}
+variable "github_branch" {
+  description = "github branch"
+  type = string
+}
+
+variable "imagedefinitions_path" {
+  description = "imagedefinitions path"
+  type = string
+}

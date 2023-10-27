@@ -4,8 +4,8 @@
         {
             "Effect": "Allow",
             "Resource": [
-                "arn:aws:logs:${region}:${account_id}:log-group:/aws/codebuild/terraform-test-build-project",
-                "arn:aws:logs:${region}:${account_id}:log-group:/aws/codebuild/terraform-test-build-project:*"
+                "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/codebuild/terraform-test-build-project",
+                "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/codebuild/terraform-test-build-project:*"
             ],
             "Action": [
                 "logs:CreateLogGroup",
@@ -16,7 +16,7 @@
         {
             "Effect": "Allow",
             "Resource": [
-                "arn:aws:s3:::${artifact_bucket_name}/*"
+                "arn:aws:s3:::${var.artifact_bucket_name}/*"
             ],
             "Action": [
                 "s3:PutObject",

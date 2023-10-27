@@ -99,7 +99,6 @@ module "rds" {
   rds_engine            = var.rds_engine
   rds_engine_version    = var.rds_engine_version
   rds_instance_class    = var.rds_instance_class
-  rds_option_group_name = var.rds_option_group_name
   rds_storage_type      = var.rds_storage_type
   rds_db_name           = var.rds_db_name
   rds_username          = var.rds_username
@@ -138,4 +137,29 @@ module "vpc" {
   private_subnet_3_cidr_block = var.private_subnet_3_cidr_block
   public_subnet_2_cidr_block  = var.public_subnet_2_cidr_block
   public_subnet_6_cidr_block  = var.public_subnet_6_cidr_block
+}
+
+module "cicd" {
+  source                     = "../../modules/cicd"
+
+  account_id                 = var.account_id
+  aws_access_key_id          = var.aws_access_key_id
+  aws_access_secret_key      = var.aws_access_secret_key
+  project_name               = var.project_name
+  region                     = var.region
+  env                        = var.env
+  github_account_name        = var.github_account_name
+  github_token               = var.github_token
+  github_repository          = var.github_repository
+  github_branch              = var.github_branch
+  imagedefinitions_path      = var.imagedefinitions_path
+
+  depends_on = [
+    module.vpc,
+    module.alb,
+    module.ec2,
+    module.ecs,
+    module.rds,
+    module.sg
+  ]
 }

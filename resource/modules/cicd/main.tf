@@ -2,7 +2,7 @@
 # S3 bucket Setting
 #--------------------------------------------------------------
 resource "aws_s3_bucket" "terraform-test-s3-artifact" {
-  bucket = "${var.artifact_bucket_name}"
+  bucket = "${var.env}-${var.project_name}-codepipeline-${var.region}-artifact"
   acl    = "private"
 }
 
@@ -30,8 +30,8 @@ data "template_file" "codebuild_policy" {
 
   vars = {
     account_id     = "${var.account_id}"
-    codebuild_name = "${var.codebuild_name}"
-    bucket_name    = "${var.artifact_bucket_name}"
+    codebuild_name = "${var.env}-${var.project_name}-build-project"
+    bucket_name    = "${var.env}-${var.project_name}-codepipeline-${var.region}-artifact"
   }
 }
 
@@ -45,7 +45,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
 # CodeBuild Settings
 #--------------------------------------------------------------
 resource "aws_codebuild_project" "main_build" {
-  name          = "${var.codebuild_name}"
+  name          = "${var.env}-${var.project_name}-build-project"
   description   = "create for codepipeline stage"
   build_timeout = "60"
   service_role  = "${aws_iam_role.codebuild_role.arn}"
@@ -63,7 +63,7 @@ resource "aws_codebuild_project" "main_build" {
   }
 
   source {
-    buildspec       = "buildspec/buildspec-dev.yml"
+    buildspec       = "buildspec/buildspec-${var.env}.yml"
     type            = "CODEPIPELINE"
   }
 }
@@ -93,7 +93,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
 data "template_file" "codepipeline_s3_policy" {
   template = "${file("./policies/codepipeline_s3_policy.json.tpl")}"
   vars = {
-    bucket_name = "${var.artifact_bucket_name}"
+    bucket_name = "${var.env}-${var.project_name}-codepipeline-${var.region}-artifact"
   }
 }
 
@@ -152,7 +152,7 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName = "${var.codebuild_name}" //CodeBuild Name
+        ProjectName = "${var.env}-${var.project_name}-build-project" //CodeBuild Name
       }
     }
   }
@@ -169,8 +169,8 @@ resource "aws_codepipeline" "main" {
       version         = "1"
 
       configuration = {
-        ClusterName = "${var.ecs_cluster_name}"      //AWS ECS Cluster Name
-        ServiceName = "${var.ecs_service_name}"      //AWS ECS Service Name
+        ClusterName = "${var.env}-${var.project_name}-ecs-cluster"      //AWS ECS Cluster Name
+        ServiceName = "${var.env}-${var.project_name}-springboot"      //AWS ECS Service Name
         FileName    = "${var.imagedefinitions_path}" //GitHub imagedefinitions.json Path
       }
     }
