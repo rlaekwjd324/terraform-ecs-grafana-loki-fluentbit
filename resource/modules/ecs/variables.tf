@@ -3,6 +3,7 @@ variable "private_ec2_sg_id" {}
 variable "alb_grafana_arn" {}
 variable "alb_app_arn" {}
 /* variable "alb_loki_arn" {} */
+variable "db_instance_endpoint" {}
 
 variable "env" {}
 variable "project_name" {}
@@ -15,6 +16,9 @@ variable "loki_host_port" {}
 variable "loki_container_port_1" {}
 variable "loki_container_port_2" {}
 variable "loki_container_port_3" {}
+variable "rds_db_name" {}
+variable "rds_username" {}
+variable "rds_password" {}
 
 variable "ecs_instance_role_arn" {}
 variable "ecs_instance_role_profile_arn" {}

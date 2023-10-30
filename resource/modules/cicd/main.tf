@@ -3,6 +3,7 @@
 #--------------------------------------------------------------
 resource "aws_s3_bucket" "terraform-test-s3-artifact" {
   bucket = "${var.env}-${var.project_name}-codepipeline-${var.region}-artifact"
+  force_destroy = true
   acl    = "private"
 }
 
@@ -30,7 +31,9 @@ data "template_file" "terraform-test-codebuild-policy" {
 
   vars = {
     account_id            = "${var.account_id}"
+    env                   = "${var.env}"
     region                = "${var.region}"
+    project_name          = "${var.project_name}"
     artifact_bucket_name  = "${var.env}-${var.project_name}-codepipeline-${var.region}-artifact"
   }
 }

@@ -3,10 +3,10 @@ terraform {
 
   required_providers {
     aws = "~> 4.0"
-    grafana = {
+    /* grafana = {
       source = "grafana/grafana"
       version = ">= 1.28.2"
-    }
+    } */
   }
 }
 
@@ -16,7 +16,7 @@ provider "aws" {
   region     = var.region
 }
 
-provider "grafana" {
+/* provider "grafana" {
     url = <YOUR_GRAFANA_URL>
     auth = <YOUR_GRAFANA_API_KEY>
-}
+} */

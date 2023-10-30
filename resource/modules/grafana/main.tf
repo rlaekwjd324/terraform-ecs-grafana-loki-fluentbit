@@ -3,7 +3,7 @@ resource "grafana_contact_point" "my_slack_contact_point" {
     name = "Send to My Slack Channel"
 
     slack {
-        url = <YOUR_SLACK_WEBHOOK_URL>
+        url = "https://hooks.slack.com/services/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"
         text = <<EOT
 {{ len .Alerts.Firing }} alerts are firing!
 

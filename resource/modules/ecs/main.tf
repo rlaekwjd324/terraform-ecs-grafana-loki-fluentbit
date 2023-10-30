@@ -1,3 +1,4 @@
+# https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file
 data "template_file" "terraform-test-userdata" {
   template = "${filebase64("./launch_template.sh")}"
   vars = {
@@ -65,7 +66,24 @@ resource "aws_ecs_task_definition" "terraform-test-springboot" {
             }
         ],
         "essential": true,
-        "environment": [],
+        "environment": [
+            {
+                "name": "DB_HOST",
+                "value": "${var.db_instance_endpoint}"
+            },
+            {
+                "name": "DB_NAME",
+                "value": "${var.rds_db_name}"
+            },
+            {
+                "name": "DB_USERNAME",
+                "value": "${var.rds_username}"
+            },
+            {
+                "name": "DB_PASSWORD",
+                "value": "${var.rds_password}"
+            }
+        ],
         "mountPoints": [],
         "volumesFrom": [],
         "logConfiguration": {

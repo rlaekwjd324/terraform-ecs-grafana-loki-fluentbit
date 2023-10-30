@@ -42,6 +42,7 @@ module "ecs" {
   alb_grafana_arn                         = module.alb.alb_grafana_arn
   alb_app_arn                             = module.alb.alb_app_arn
   /* alb_loki_arn                            = module.alb.alb_loki_arn */
+  db_instance_endpoint                    = module.rds.db_instance_endpoint
   
   env                                     = var.env
   project_name                            = var.project_name
@@ -54,6 +55,9 @@ module "ecs" {
   loki_container_port_1                   = var.loki_container_port_1
   loki_container_port_2                   = var.loki_container_port_2
   loki_container_port_3                   = var.loki_container_port_3
+  rds_db_name                             = var.rds_db_name
+  rds_username                            = var.rds_username
+  rds_password                            = var.rds_password
 
   ecs_instance_role_arn                   = var.ecs_instance_role_arn
   ecs_instance_role_profile_arn           = var.ecs_instance_role_profile_arn
@@ -81,6 +85,7 @@ module "ecs" {
 
   depends_on = [
     module.vpc,
+    module.rds,
     module.alb
   ]
 }
