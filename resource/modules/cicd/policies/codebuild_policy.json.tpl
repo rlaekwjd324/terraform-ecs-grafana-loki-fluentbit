@@ -4,8 +4,8 @@
         {
             "Effect": "Allow",
             "Resource": [
-                "arn:aws:logs:${region}:${account_id}:log-group:/aws/codebuild/${var.env}-${var.project_name}-build-project",
-                "arn:aws:logs:${region}:${account_id}:log-group:/aws/codebuild/${var.env}-${var.project_name}-build-project:*"
+                "arn:aws:logs:${region}:${account_id}:log-group:/aws/codebuild/${env}-${project_name}-build-project",
+                "arn:aws:logs:${region}:${account_id}:log-group:/aws/codebuild/${env}-${project_name}-build-project:*"
             ],
             "Action": [
                 "logs:CreateLogGroup",

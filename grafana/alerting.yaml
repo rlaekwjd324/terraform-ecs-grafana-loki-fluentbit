@@ -2,15 +2,6 @@
 apiVersion: 1
 alerting:
   enabled: true
-  email:
-    enabled: false
-    name: Email
-    type: email
-    uid: email-notification
-    frequency: 1m
-    settings:
-      addresses: ["<이메일 알림을 위한 이메일 주소>"]
-
   slack:
     enabled: true
     name: Slack

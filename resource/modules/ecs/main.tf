@@ -1,6 +1,6 @@
 # https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file
 data "template_file" "terraform-test-userdata" {
-  template = "${filebase64("./launch_template.sh")}"
+  template = "${file("./launch_template.sh")}"
   vars = {
     env = "${var.env}"
     project_name = "${var.project_name}"
@@ -16,7 +16,7 @@ resource "aws_launch_template" "terraform-test-ec2" {
   iam_instance_profile {
     arn= "${var.ecs_instance_role_profile_arn}"
   }
-  user_data = "${data.template_file.terraform-test-userdata.rendered}"
+  user_data = base64encode("${data.template_file.terraform-test-userdata.rendered}")
 }
 
 resource "aws_autoscaling_group" "terraform-test-ecs-asg-group" {
@@ -266,6 +266,7 @@ resource "aws_ecs_service" "terraform-test-loki" {
       }
     }
   }
+  depends_on = [aws_autoscaling_group.terraform-test-ecs-asg-group]
 }
 
 resource "aws_ecs_service" "terraform-test-grafana" {
