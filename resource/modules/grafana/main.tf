@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "grafana" {
-  url = "http://3.37.88.24:3000/"
+  url = "http://3.34.97.59:3000/"
   auth = "admin:admin"
 }
 
@@ -20,10 +20,15 @@ resource "grafana_contact_point" "slack_contact_point" {
 
     slack {
         url = "https://hooks.slack.com/services/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"
+        username = "ERROR"
+        mention_channel = "here"
+        endpoint_url = "https://www.naver.com"
+        disable_resolve_message = true
+        title = "에러가 발생했습니다."
         text = <<EOT
-{{ len .Alerts.Firing }} alerts are firing!
+에러 발생 : {{ len .Alerts.Firing }}회
 
-Alert summaries:
+에러 요약:
 {{ range .Alerts.Firing }}
 {{ template "Alert Instance Template" . }}
 {{ end }}
@@ -37,7 +42,6 @@ resource "grafana_message_template" "my_alert_template" {
     template = <<EOT
 {{ define "Alert Instance Template" }}
 Firing: {{ .Labels.alertname }}
-Silence: {{ .SilenceURL }}
 {{ end }}
 EOT
 }
@@ -72,8 +76,8 @@ resource "grafana_rule_group" "my_alert_rule" {
     name           = "My Alert Rule 1"
     for            = "1m"
     condition      = "B"
-    no_data_state  = "NoData"
-    exec_err_state = "Alerting"
+    no_data_state  = "OK"
+    exec_err_state = "OK"
     annotations = {
     }
     labels = {
@@ -82,13 +86,14 @@ resource "grafana_rule_group" "my_alert_rule" {
     is_paused = false
     data {
       ref_id     = "A"
-      query_type = ""
+      query_type = "instant"
       relative_time_range {
         from = 600
         to   = 0
       }
       datasource_uid = grafana_data_source.loki.uid
       model = jsonencode({
+        expr = "count_over_time({ecs_task_definition=\"dev-terraform-springboot:14\"}|=\"error\"[1m])"
         hide          = false
         intervalMs    = 1000
         maxDataPoints = 43200
@@ -109,7 +114,7 @@ resource "grafana_rule_group" "my_alert_rule" {
         {
         "evaluator": {
             "params": [
-            3
+            10
             ],
             "type": "gt"
         },
@@ -158,6 +163,7 @@ resource "grafana_dashboard" "loki" {
   folder = grafana_folder.data_source_dashboards.id
   config_json = jsonencode({
     "editable": true,
+    "uid": "test-ds-dashboard-uid"
     "panels": [
       {
         "type": "timeseries",
@@ -167,7 +173,7 @@ resource "grafana_dashboard" "loki" {
           {
             "refId": "A",
             "queryType": "range",
-            "expr": "rate({ecs_task_definition=\"dev-terraform-springboot:14\"}[$__interval])",
+            "expr": "count_over_time({ecs_task_definition=\"dev-terraform-springboot:14\"}|=\"error\"[$__interval])",
             "alias": "My Metric"
           }
         ]
@@ -179,21 +185,13 @@ resource "grafana_dashboard" "loki" {
     },
     "title": "My Dashboard test"  # 대시보드의 이름은 여기에 정의합니다.
   })
+  depends_on = [
+    grafana_data_source.loki
+  ]
 }
 
 resource "grafana_folder" "data_source_dashboards" {
   title = "test folder data_source_dashboards"
-}
-
-resource "grafana_dashboard" "loki_dashboard" {
-  folder = grafana_folder.data_source_dashboards.id
-  config_json = jsonencode({
-    id            = 23456
-    title         = "data_source_dashboards 1"
-    tags          = ["data_source_dashboards"]
-    timezone      = "browser"
-    schemaVersion = 16
-  })
 }
 
 data "grafana_dashboard" "from_id" {
