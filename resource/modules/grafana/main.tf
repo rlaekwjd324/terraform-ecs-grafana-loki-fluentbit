@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "grafana" {
-  url = "http://3.34.97.59:3000/"
+  url = "http://15.164.174.66:3000/"
   auth = "admin:admin"
 }
 
@@ -19,16 +19,14 @@ resource "grafana_contact_point" "slack_contact_point" {
     name = "slack"
 
     slack {
-        url = "https://hooks.slack.com/services/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"
+        url = "https://hooks.slack.com/services/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"
         username = "ERROR"
         mention_channel = "here"
-        endpoint_url = "https://www.naver.com"
         disable_resolve_message = true
         title = "에러가 발생했습니다."
         text = <<EOT
 에러 발생 : {{ len .Alerts.Firing }}회
 
-에러 요약:
 {{ range .Alerts.Firing }}
 {{ template "Alert Instance Template" . }}
 {{ end }}
@@ -41,13 +39,15 @@ resource "grafana_message_template" "my_alert_template" {
 
     template = <<EOT
 {{ define "Alert Instance Template" }}
-Firing: {{ .Labels.alertname }}
+{{ .Labels.alertname }}
+발생 컨테이너 : {{ .Labels.container_name }}
+에러 메시지 : {{ .Labels.log }}
 {{ end }}
 EOT
 }
 
 resource "grafana_notification_policy" "my_policy" {
-    group_by = ["alertname"]
+    group_by = []
     contact_point = grafana_contact_point.slack_contact_point.name
 
     group_wait = "1m"
@@ -56,65 +56,65 @@ resource "grafana_notification_policy" "my_policy" {
 
     policy {
         matcher {
-            label = "type"
-            match = "="
-            value = "error"
+          label = "job"
+          match = "="
+          value = "firelens"
         }
         group_by = ["..."]
         contact_point = grafana_contact_point.slack_contact_point.name
     }
 }
 
-# 여기부터 다시 시작
 # 수동으로 alert rule 만들어서 그 내용과 비교하면서 값 채워나가기
 resource "grafana_rule_group" "my_alert_rule" {
   name             = "My Rule Group"
-  folder_uid       = grafana_folder.rule_folder.uid
-  interval_seconds = 240
+  folder_uid       = grafana_folder.data_source_dashboards.uid
+  interval_seconds = 60
   org_id           = 1
   rule {
     name           = "My Alert Rule 1"
     for            = "1m"
-    condition      = "B"
+    condition      = "C"
     no_data_state  = "OK"
     exec_err_state = "OK"
     annotations = {
     }
     labels = {
-      "type" = "ERROR"
     }
     is_paused = false
     data {
       ref_id     = "A"
-      query_type = "instant"
+      query_type = "range"
+      datasource_uid = grafana_data_source.loki.uid
       relative_time_range {
-        from = 600
+        from = 60
         to   = 0
       }
-      datasource_uid = grafana_data_source.loki.uid
       model = jsonencode({
-        expr = "count_over_time({ecs_task_definition=\"dev-terraform-springboot:14\"}|=\"error\"[1m])"
+        editorMode = "code"
+        expr = "count_over_time({ecs_task_definition=\"dev-terraform-springboot:19\"}|log=~`.+ERROR.+`[1m])"
         hide          = false
-        intervalMs    = 1000
+        intervalMs    = 60000
         maxDataPoints = 43200
         refId         = "A"
+        query_type = "range"
       })
     }
     data {
       ref_id     = "B"
       query_type = ""
       relative_time_range {
-        from = 0
+        from = 60
         to   = 0
       }
-      datasource_uid = "-100"
+      datasource_uid = "__expr__"
       model          = <<EOT
 {
     "conditions": [
         {
         "evaluator": {
             "params": [
-            10
+            0,0
             ],
             "type": "gt"
         },
@@ -122,34 +122,81 @@ resource "grafana_rule_group" "my_alert_rule" {
             "type": "and"
         },
         "query": {
-            "params": [
-            "A"
-            ]
+            "params": []
         },
         "reducer": {
             "params": [],
-            "type": "last"
+            "type": "avg"
         },
         "type": "query"
-        }
+      }
     ],
     "datasource": {
         "type": "__expr__",
-        "uid": "-100"
+        "uid": "__expr__",
+        "name": "Expression"
     },
-    "hide": false,
+    "expression": "A",
     "intervalMs": 1000,
     "maxDataPoints": 43200,
     "refId": "B",
-    "type": "classic_conditions"
+    "type": "reduce",
+    "reducer": "last"
+}
+EOT
+    }
+    data {
+      ref_id     = "C"
+      query_type = ""
+      relative_time_range {
+        from = 60
+        to   = 0
+      }
+      datasource_uid = "__expr__"
+      model          = <<EOT
+{
+    "conditions": [
+        {
+        "evaluator": {
+            "params": [
+            0,0
+            ],
+            "type": "gt"
+        },
+        "operator": {
+            "type": "and"
+        },
+        "query": {
+            "params": []
+        },
+        "reducer": {
+            "params": [],
+            "type": "avg"
+        },
+        "type": "query"
+      }
+    ],
+    "datasource": {
+        "type": "__expr__",
+        "uid": "__expr__",
+        "name": "Expression"
+    },
+    "expression": "B",
+    "intervalMs": 1000,
+    "maxDataPoints": 43200,
+    "refId": "C",
+    "type": "threshold"
 }
 EOT
     }
   }
+  depends_on = [
+    grafana_dashboard.loki
+  ]
 }
 
-resource "grafana_folder" "rule_folder" {
-  title = "My Alert Rule Folder"
+resource "grafana_folder" "data_source_dashboards" {
+  title = "test folder data_source_dashboards"
 }
 
 resource "grafana_data_source" "loki" {
@@ -173,7 +220,7 @@ resource "grafana_dashboard" "loki" {
           {
             "refId": "A",
             "queryType": "range",
-            "expr": "count_over_time({ecs_task_definition=\"dev-terraform-springboot:14\"}|=\"error\"[$__interval])",
+            "expr": "count_over_time({ecs_task_definition=\"dev-terraform-springboot:19\"}|log=~`.+ERROR.+`[1m])",
             "alias": "My Metric"
           }
         ]
@@ -188,10 +235,6 @@ resource "grafana_dashboard" "loki" {
   depends_on = [
     grafana_data_source.loki
   ]
-}
-
-resource "grafana_folder" "data_source_dashboards" {
-  title = "test folder data_source_dashboards"
 }
 
 data "grafana_dashboard" "from_id" {
