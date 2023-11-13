@@ -15,6 +15,18 @@ provider "grafana" {
 }
 
 # https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/contact_point
+resource "grafana_contact_point" "my_contact_point" {
+  name = "My Contact Point"
+
+  email {
+    addresses               = ["one@company.org", "two@company.org"]
+    message                 = "{{ len .Alerts.Firing }} firing."
+    subject                 = "{{ template \"default.title\" .}}"
+    single_email            = true
+    disable_resolve_message = false
+  }
+}
+
 resource "grafana_contact_point" "slack_contact_point" {
     name = "slack"
 
@@ -48,7 +60,7 @@ EOT
 
 resource "grafana_notification_policy" "my_policy" {
     group_by = []
-    contact_point = grafana_contact_point.slack_contact_point.name
+    contact_point = grafana_contact_point.my_contact_point.name
 
     group_wait = "1m"
     group_interval = "1m"
